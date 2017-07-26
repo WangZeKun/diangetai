@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>广中点歌台</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/static/css/landing-page.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+    <div class="container topnav">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand topnav" href="#">广中点歌台</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#home">点歌</a>
+                </li>
+                <li>
+                    <a href="#services">前期回顾</a>
+                </li>
+                <li>
+                    <a href="#contact">联系我们</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+<!-- Header -->
+<a name="home"></a>
+<div class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="intro-message" id="music">
+                    <transition name="fade">
+
+                        <h1 v-if="done">您已成功报名</h1>
+                    </transition>
+                    <transition name="fade">
+                        <div v-if="!done">
+                            <div v-if="error" class="alert alert-warning alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <strong>Warning!</strong> 请确认填写完表格
+                            </div>
+                            <h3>开始点歌吧</h3>
+                            <hr class="intro-divider">
+                            <center>
+                                <form class="form-horizontal intro-form">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">点歌人信息</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" v-model="formdata.sendSong" class="form-control"
+                                                   id="inputname1" placeholder="点歌人的班级姓名">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">被点人信息</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" v-model="formdata.arriveSong" class="form-control"
+                                                   placeholder="被点人的班级姓名">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">所点歌曲</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" v-model="formdata.Song" class="form-control"
+                                                   placeholder="请正确写出歌曲的名称和作者">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">祝福的话</label>
+                                        <div class="col-sm-10">
+                                            <textarea v-model="formdata.Something" class="form-control" rows="3"
+                                                      placeholder="祝福的话"></textarea>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <button @click="add" class="btn btn-default" :disabled="loading">点歌！</button>
+                            </center>
+                        </div>
+                    </transition>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+</div>
+<!-- /.intro-header -->
+
+<!-- Page Content -->
+
+<a name="services"></a>
+<div class="content-section-b">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                <hr class="section-heading-spacer">
+                <div class="clearfix"></div>
+                <h2 class="section-heading">往期回顾<br></h2>
+                <p class="lead">这是点歌台的往期回顾，如果听到了非常好听的曲子，可以来这里寻找哦
+                </p>
+            </div>
+            <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+                <img class="img-responsive" src="/static/img/ipad.png" alt="">
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+</div>
+<<<range  $index, $elem := .data>>>
+<<<if $elem>>>
+<div class="content-section-a">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 col-sm-6">
+                <hr class="section-heading-spacer">
+                <div class="clearfix"></div>
+                <h3 class="section-heading">
+                    2017-2018学年第<<<$index>>>次点歌台<br>
+                    <a href="/static/music/<<<$index>>>.zip"> （点此下载）</a>
+                </h3>
+                <<<range $index, $el := $elem.S>>>
+                    <p>
+                        <<<$index |index>>>.<<<$el.SendSong>>>点给<<<$el.ArriveSong>>>的《<<<$el.Song>>>》
+                    </p>
+                <<<end>>>
+            </div>
+            <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                <img class="img-responsive" src="<<<$elem.P.Picture>>>" alt="啊啊啊啊">
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+</div>
+<!-- /.content-section-a -->
+<<<end>>>
+<<<end>>>
+
+<a name="contact"></a>
+<div class="banner">
+    <div class="container">
+
+        <div class="row">
+            <div >
+                <h2>如有意见或建议，请发送邮件至1015190212@qq.com</h2>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+</div>
+<!-- /.banner -->
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <ul class="list-inline">
+                    <li>
+                        <a href="#">Home</a>
+                    </li>
+                    <li class="footer-menu-divider">&sdot;</li>
+                    <li>
+                        <a href="#home">About</a>
+                    </li>
+                    <li class="footer-menu-divider">&sdot;</li>
+                    <li>
+                        <a href="#services">Services</a>
+                    </li>
+                    <li class="footer-menu-divider">&sdot;</li>
+                    <li>
+                        <a href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <p class="copyright text-muted small">Copyright &copy;2017 Wang Zekin. All Rights Reserved</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/static/js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/static/js/bootstrap.min.js"></script>
+<!-- Vue  -->
+<script src="/static/js/vue.js"></script>
+<!--axios  -->
+<script src="/static/js/axios.min.js"></script>
+<script>
+    var music = new Vue({
+        el: '#music',
+        data: {
+            loading: false,
+            done: false,
+            formdata: {
+                sendSong: '',
+                arriveSong: '',
+                Song: '',
+                Something: '',
+                num:1
+            },
+            error: false
+
+        },
+        methods: {
+            add: function () {
+                this.loading = true
+                for (let x of Object.keys(this.formdata)) {
+                    if (this.formdata[x] === '') {
+                        console.log(x)
+                        this.error = true
+                        return
+                    }
+                }
+                this.error = false
+                axios.get('/add', {
+                    params: this.formdata
+                }).then((res) => {
+                    this.loading = false
+                this.done = true
+                console.log(res)
+            }).catch (res =>{
+                    console.log(res)
+                })
+            }
+        }
+    })
+</script>
+</body>
+
+</html>

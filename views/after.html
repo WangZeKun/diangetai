@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>点歌台后端</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/static/css/landing-page.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+    <div class="container topnav">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand topnav" href="#">点歌台后端</a>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+<!-- Header -->
+<a name="home"></a>
+<div class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="intro-message">
+                    <h1>点歌台后端操作</h1>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+</div>
+<!-- /.intro-header -->
+<div class="table-responsive table-css" id="after">
+    <table class="table">
+        <tr>
+            <th>#</th>
+            <th>点歌人</th>
+            <th>被点人</th>
+            <th>所点的歌</th>
+            <th>想说的话</th>
+        </tr>
+        <tr v-for="(elem,index) of data">
+            <th><input type="checkbox" :value="index" @change="change"/></th>
+            <td>{{elem.SendSong}}</td>
+            <td>{{elem.ArriveSong}}</td>
+            <td>{{elem.Song}}</td>
+            <td>{{elem.Something}}</td>
+        </tr>
+    </table>
+    <form class="form-inline" action="" method="post" target="nm_iframe">
+        <div class="form-group" style="padding: 20px">
+            <label for="PictureFile">展示图片</label>
+            <input type="file" id="PictureFile" @change="selectPicture" accept="image/*">
+            <p class="help-block">在主页上展示的图片</p>
+        </div>
+        <div class="form-group" style="padding: 20px">
+            <label for="MusicFile">音乐文件</label>
+            <input type="file" id="MusicFile" @change="selectMusic" accept="application/zip">
+            <p class="help-block">播放所需要的音乐文件（压缩包格式）</p>
+        </div>
+        <button class="btn btn-primary" :disable="loading" @click="send">决定播放</button>
+    </form>
+    <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
+</div>
+<!-- Table -->
+
+<a name="contact"></a>
+<div class="banner">
+    <div class="container">
+
+        <div class="row">
+            <div>
+                <h2>如有意见或建议，请发送邮件至1015190212@qq.com</h2>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+</div>
+<!-- /.banner -->
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <ul class="list-inline">
+                    <li>
+                        <a href="#">Home</a>
+                    </li>
+                    <li class="footer-menu-divider">&sdot;</li>
+                    <li>
+                        <a href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <p class="copyright text-muted small">Copyright &copy;2017 Wang Zekin. All Rights Reserved</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/static/js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/static/js/bootstrap.min.js"></script>
+<!-- Vue  -->
+<script src="/static/js/vue.js"></script>
+<!--axios  -->
+<script src="/static/js/axios.min.js"></script>
+<script>
+    var music = new Vue({
+        el: '#after',
+        methods: {
+            change: function (event) {
+                if (event.target.checked) {
+                    this.form.select.push(event.target.value)
+                } else {
+                    for (let i in this.form.select) {
+                        if (this.form.select[i]===event.target.value){
+                            this.form.select.splice(i,1)
+                        }
+                    }
+                }
+            },
+            selectPicture: function (event) {
+                this.form.picture = event.target.files[0];
+            },
+            selectMusic:function (e) {
+                this.form.file =e.target.files[0]
+                console.log(this.form.picture)
+            },
+            send:function () {
+                if(this.form.select.length <2){
+                    alert("请选择要播放的歌曲（大于等于2个）")
+                }
+                if(this.form.file === ""){
+                    alert("请选择文件！")
+                }
+                if(this.form.picture === ""){
+                    alert("请选择图片！")
+                }
+                this.loading=true
+                let formdata = new FormData()
+                let select = []
+                for (let x of this.form.select){
+                    select.push(this.data[x])
+                }
+                formdata.append('select',JSON.stringify(select))
+                formdata.append('file',this.form.file)
+                formdata.append('picture',this.form.picture)
+                axios.post('/end',formdata)
+            }
+
+        },
+        data: {
+            data: JSON.parse(<<<.data>>>),
+
+            loading: false,
+            form: {
+                select: [],
+                file:'',
+                picture:''
+            }
+        }
+    })
+</script>
+</body>
+
+</html>
