@@ -11,9 +11,11 @@ type Schedule struct {
 	Num        int
 	Asc        bool
 	Song       string
+	SongType   string
 	SendSong   string
 	ArriveSong string
 	Something  string
+	Url string
 }
 
 type Periods struct {
@@ -58,7 +60,6 @@ func EndRead() (s map[int]SP, err error) {
 		var h Periods
 		engine.Where("`asc`<>0").And("num=?", a).Find(&j)
 		engine.Where("num=?", a).Get(&h)
-		beego.Informational(h.Picture)
 		s[a] = SP{
 			S: j,
 			P: h,

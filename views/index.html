@@ -11,6 +11,9 @@
 
     <title>广中点歌台</title>
 
+    <!--Button css-->
+    <link href="/static/css/button.css" rel="stylesheet">
+
     <!-- Bootstrap Core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
@@ -103,6 +106,7 @@
                                                    placeholder="被点人的班级姓名">
                                         </div>
                                     </div>
+
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">所点歌曲</label>
                                         <div class="col-sm-10">
@@ -117,9 +121,32 @@
                                                       placeholder="祝福的话"></textarea>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">歌曲平台</label>
+                                        <div class="col-sm-10">
+                                            <select class="form-control" v-model="formdata.type">
+                                                <option>网易云音乐</option>
+                                                <option>百度音乐</option>
+                                                <option>酷狗音乐</option>
+                                                <option>酷我音乐</option>
+                                                <option>虾米音乐</option>
+                                                <option>自行上传</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" v-if="formdata.type!=='自行上传'">
+                                        <label class="col-sm-2 control-label">歌曲链接</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" v-model="formdata.url" class="form-control"
+                                                   placeholder="请正确写出歌曲的名称和作者">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" v-else>
+                                        <label for="exampleInputFile">歌曲上传</label>
+                                        <input type="file" id="exampleInputFile" @change="fileChange">
+                                    </div>
                                 </form>
-
-                                <button @click="add" class="btn btn-default" :disabled="loading">点歌！</button>
+                                <button @click="add" class="button button-3d button-action button-pill"  :disabled="loading">点歌！</button>
                             </center>
                         </div>
                     </transition>
@@ -249,25 +276,37 @@
                 arriveSong: '',
                 Song: '',
                 Something: '',
-                num:1
+                type:'',
+                music:'',
+                url:''
             },
             error: false
-
         },
         methods: {
+            fileChange:function (event) {
+                this.formdata.music = event.target.files[0];
+            },
             add: function () {
-                this.loading = true
+                let formdata = new FormData()
                 for (let x of Object.keys(this.formdata)) {
                     if (this.formdata[x] === '') {
-                        console.log(x)
+                        if(x === "url"){
+                            if (this.formdata.type==="自行上传"){
+                                continue
+                            }
+                        }else if(x ==="music"){
+                            if (this.formdata.type !=="自行上传"){
+                                continue
+                            }
+                        }
                         this.error = true
                         return
                     }
+                    formdata.append(x,this.formdata[x])
                 }
+                this.loading = true
                 this.error = false
-                axios.get('/add', {
-                    params: this.formdata
-                }).then((res) => {
+                axios.post('/add', formdata).then((res) => {
                     this.loading = false
                 this.done = true
                 console.log(res)

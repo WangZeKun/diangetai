@@ -11,6 +11,9 @@
 
     <title>点歌台后端</title>
 
+    <!--Button css-->
+    <link href="/static/css/button.css" rel="stylesheet">
+
     <!-- Bootstrap Core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
@@ -76,6 +79,7 @@
             <th>点歌人</th>
             <th>被点人</th>
             <th>所点的歌</th>
+            <th></th>
             <th>想说的话</th>
         </tr>
         <tr v-for="(elem,index) of data">
@@ -83,23 +87,24 @@
             <td>{{elem.SendSong}}</td>
             <td>{{elem.ArriveSong}}</td>
             <td>{{elem.Song}}</td>
+            <td>
+                <audio controls>
+                <source :src="elem.Url" />
+            </audio>
+            </td>
             <td>{{elem.Something}}</td>
         </tr>
     </table>
-    <form class="form-inline" action="" method="post" target="nm_iframe">
+    <center>
+    <form class="form-inline">
         <div class="form-group" style="padding: 20px">
             <label for="PictureFile">展示图片</label>
             <input type="file" id="PictureFile" @change="selectPicture" accept="image/*">
             <p class="help-block">在主页上展示的图片</p>
         </div>
-        <div class="form-group" style="padding: 20px">
-            <label for="MusicFile">音乐文件</label>
-            <input type="file" id="MusicFile" @change="selectMusic" accept="application/zip">
-            <p class="help-block">播放所需要的音乐文件（压缩包格式）</p>
-        </div>
-        <button class="btn btn-primary" :disable="loading" @click="send">决定播放</button>
+        <button class="button button-glow button-rounded button-royal" :disable="loading" @click="send">决定播放</button>
     </form>
-    <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
+    </center>
 </div>
 <!-- Table -->
 
@@ -166,19 +171,9 @@
             selectPicture: function (event) {
                 this.form.picture = event.target.files[0];
             },
-            selectMusic:function (e) {
-                this.form.file =e.target.files[0]
-                console.log(this.form.picture)
-            },
             send:function () {
                 if(this.form.select.length <2){
                     alert("请选择要播放的歌曲（大于等于2个）")
-                }
-                if(this.form.file === ""){
-                    alert("请选择文件！")
-                }
-                if(this.form.picture === ""){
-                    alert("请选择图片！")
                 }
                 this.loading=true
                 let formdata = new FormData()
