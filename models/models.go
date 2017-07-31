@@ -1,25 +1,26 @@
 package models
 
 import (
+	"chain"
+	"strconv"
+
+	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
-	"github.com/astaxie/beego"
-	"strconv"
 )
 
 type Schedule struct {
 	Num        int
 	Asc        bool
-	Song       string
 	SongType   string
 	SendSong   string
 	ArriveSong string
 	Something  string
-	Url string
+	Song       chain.Music `xorm:"json"	`
 }
 
 type Periods struct {
-	Num     int `xorm:"pk autoincr"`
+	Num     int    `xorm:"pk autoincr"`
 	Picture string `xorm:"LONGTEXT"`
 	IsEnd   bool
 }

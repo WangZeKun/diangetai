@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "diangetai/routers"
+
 	"github.com/astaxie/beego"
 )
 

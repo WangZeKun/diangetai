@@ -79,19 +79,13 @@
             <th>点歌人</th>
             <th>被点人</th>
             <th>所点的歌</th>
-            <th></th>
             <th>想说的话</th>
         </tr>
         <tr v-for="(elem,index) of data">
             <th><input type="checkbox" :value="index" @change="change"/></th>
             <td>{{elem.SendSong}}</td>
             <td>{{elem.ArriveSong}}</td>
-            <td>{{elem.Song}}</td>
-            <td>
-                <audio controls>
-                <source :src="elem.Url" />
-            </audio>
-            </td>
+            <td>{{elem.Song.Name}}</td>
             <td>{{elem.Something}}</td>
         </tr>
     </table>
@@ -143,10 +137,13 @@
         </div>
     </div>
 </footer>
-
+<br>
+<br>
+    <div id="player1" style="background-color:white;position: fixed;bottom:0;width: 100%" class="aplayer"></div>
 <!-- jQuery -->
 <script src="/static/js/jquery.js"></script>
-
+<!--Aplayer  -->
+<script src="/static/js/APlayer.min.js"></script>
 <!-- Bootstrap Core JavaScript -->
 <script src="/static/js/bootstrap.min.js"></script>
 <!-- Vue  -->
@@ -190,7 +187,6 @@
         },
         data: {
             data: JSON.parse(<<<.data>>>),
-
             loading: false,
             form: {
                 select: [],
@@ -199,6 +195,27 @@
             }
         }
     })
+    let data = []
+    for (let x of music.$data.data){
+        data.push({
+            title:x.Song.Name,
+            author:x.Song.Author,
+            url:x.Song.Url,
+            pic:x.Song.PicUrl
+        })
+    }
+    console.log(data)
+    var ap1 = new APlayer({
+        element: document.getElementById('player1'),
+        narrow: false,
+        autoplay: false,
+        showlrc: false,
+        mutex: true,
+        theme: '#ad7a86',
+        mode: 'random',
+        listmaxheight: '200px',
+        music: data
+    });
 </script>
 </body>
 

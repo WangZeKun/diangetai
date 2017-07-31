@@ -1,64 +1,73 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
-	"diangetai/models"
-	"encoding/json"
-	"strconv"
-	"net/http"
-	"os"
-	"io"
-	"chain"
 	"archive/zip"
 	"bytes"
+	"chain"
+	"diangetai/models"
+	"encoding/json"
+	"io"
 	"io/ioutil"
+	"net/http"
+	"os"
+	"strconv"
+
+	"github.com/astaxie/beego"
 )
 
+//MainController  点歌台主页
 type MainController struct {
 	beego.Controller
 }
 
+//Get get主页
 func (c *MainController) Get() {
 	data, err := models.EndRead()
 	if err != nil {
 		beego.Error(err)
 		c.Abort("500")
 	}
+	music,err := chain.GetURL(beego.AppConfig.String("musicUrl"))
+	if err !=nil{
+		beego.Error(err)
+		c.Abort("500")
+	}
+	c.Data["music"] = music
+	c.Data["d"] = data[len(data)]
 	c.Data["data"] = data
 	c.Data["Email"] = "1015190212@qq.com"
 	c.TplName = "index.html"
 }
 
+//Post 接受点歌
 func (c *MainController) Post() {
 	num, err := beego.AppConfig.Int("num")
 	if err != nil {
 		beego.Error(err)
 		c.Abort("500")
 	}
-	var path string
+	s := models.Schedule{
+		SendSong:   c.GetString("sendSong"),
+		SongType:   c.GetString("type"),
+		Num:        num,
+		ArriveSong: c.GetString("arriveSong"),
+		Something:  c.GetString("Something"),
+	}
 	if c.GetString("type") == "自行上传" {
 		_, h, err := c.GetFile("music") //获取上传的文件
 		if err != nil {
 			beego.Error(err)
 			c.Abort("401")
 		}
-		path = "static/ready/" + strconv.Itoa(num) + h.Filename //文件目录
-		c.SaveToFile("music", path)                             //存文件
+		s.Song.Url = "static/ready/" + strconv.Itoa(num) + h.Filename //文件目录
+		s.Song.Name = c.GetString("Song")
+		c.SaveToFile("music", s.Song.Url)
 	} else {
-		path, err = chain.GetURL(c.GetString("url"))
+		s.Song, err = chain.GetURL(c.GetString("url"))
 		if err != nil {
 			beego.Error(err)
 			c.Abort("401")
 		}
-	}
-	s := models.Schedule{
-		SendSong:   c.GetString("sendSong"),
-		Song:       c.GetString("Song"),
-		SongType:   c.GetString("type"),
-		Num:        num,
-		ArriveSong: c.GetString("arriveSong"),
-		Something:  c.GetString("Something"),
-		Url:        path,
 	}
 	err = s.Insert()
 	if err != nil {
@@ -68,10 +77,12 @@ func (c *MainController) Post() {
 	c.ServeJSON()
 }
 
+//AfterController 点歌台后端
 type AfterController struct {
 	beego.Controller
 }
 
+//Get get方法。。。
 func (c *AfterController) Get() {
 	beego.Informational(beego.AppConfig.String("num"))
 	num, err := beego.AppConfig.Int("num")
@@ -89,6 +100,7 @@ func (c *AfterController) Get() {
 	c.TplName = "after.html"
 }
 
+//End 结束一次活动
 func (c *AfterController) End() {
 	num, err := beego.AppConfig.Int("num")
 	if err != nil {
@@ -112,17 +124,17 @@ func (c *AfterController) End() {
 	if err != nil {
 		path = "static/img/" + strconv.Itoa(num) + ".jpg"
 		res, err := http.Get("https://api.dujin.org/bing/1920.php")
+		if err != nil {
+			beego.Error(err)
+			c.Abort("500")
+		}
 		defer res.Body.Close()
-		if err != nil {
-			beego.Error(err)
-			c.Abort("500")
-		}
 		f, err := os.Create("static/img/" + strconv.Itoa(num) + ".jpg")
-		defer f.Close()
 		if err != nil {
 			beego.Error(err)
 			c.Abort("500")
 		}
+		defer f.Close()
 		io.Copy(f, res.Body)
 	} else {
 		path = "static/img/" + strconv.Itoa(num) + h.Filename //文件目录
@@ -148,15 +160,16 @@ func compress(in []models.Schedule, dest string) (err error) {
 	w := zip.NewWriter(buf)
 	for _, s := range in {
 		if s.SongType == "自行上传" {
-			file, err := os.Open(s.Url)
+			file, err := os.Open(s.Song.Url)
 			if err != nil {
 				return err
 			}
+			defer file.Close()
 			buf1, err := ioutil.ReadAll(file)
 			if err != nil {
 				return err
 			}
-			f, err := w.Create(s.Song + ".mp3")
+			f, err := w.Create(s.Song.Name + ".mp3")
 			if err != nil {
 				return err
 			}
@@ -165,11 +178,12 @@ func compress(in []models.Schedule, dest string) (err error) {
 				return err
 			}
 		} else {
-			res, err := http.Get(s.Url)
+			res, err := http.Get(s.Song.Url)
 			if err != nil {
 				return err
 			}
-			f, err := w.Create(s.Song + ".mp3")
+			defer res.Body.Close()
+			f, err := w.Create(s.Song.Name + ".mp3")
 			if err != nil {
 				return err
 			}

@@ -81,7 +81,7 @@
 
                         <h1 v-if="done">您已成功报名</h1>
                     </transition>
-                    <transition name="fade">
+                   <transition name="fade">
                         <div v-if="!done">
                             <div v-if="error" class="alert alert-warning alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -104,14 +104,6 @@
                                         <div class="col-sm-10">
                                             <input type="text" v-model="formdata.arriveSong" class="form-control"
                                                    placeholder="被点人的班级姓名">
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-2 control-label">所点歌曲</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" v-model="formdata.Song" class="form-control"
-                                                   placeholder="请正确写出歌曲的名称和作者">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -141,10 +133,19 @@
                                                    placeholder="请正确写出歌曲的名称和作者">
                                         </div>
                                     </div>
-                                    <div class="form-group" v-else>
+                                    <template v-else>
+                                    <div class="form-group" >
                                         <label for="exampleInputFile">歌曲上传</label>
                                         <input type="file" id="exampleInputFile" @change="fileChange">
                                     </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">所点歌曲</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" v-model="formdata.Song" class="form-control"
+                                                   placeholder="请正确写出歌曲的名称和作者">
+                                        </div>
+                                    </div>
+                                    </template>
                                 </form>
                                 <button @click="add" class="button button-3d button-action button-pill"  :disabled="loading">点歌！</button>
                             </center>
@@ -195,7 +196,7 @@
                 </h3>
                 <<<range $index, $el := $elem.S>>>
                     <p>
-                        <<<$index |index>>>.<<<$el.SendSong>>>点给<<<$el.ArriveSong>>>的《<<<$el.Song>>>》
+                        <<<$index |index>>>.<<<$el.SendSong>>>点给<<<$el.ArriveSong>>>的《<<<$el.Song.Name>>>》
                     </p>
                 <<<end>>>
             </div>
@@ -206,7 +207,6 @@
 
     </div>
     <!-- /.container -->
-
 </div>
 <!-- /.content-section-a -->
 <<<end>>>
@@ -255,10 +255,12 @@
         </div>
     </div>
 </footer>
+                <br>
+                <br>
+                <div id="player1" style="background-color:white;position: fixed;bottom:0;width: 100%" class="aplayer"></div>
 
 <!-- jQuery -->
-<script src="/static/js/jquery.js"></script>
-
+<script src="/static/js/jquery.js"></script><script src="/static/js/APlayer.min.js"></script>
 <!-- Bootstrap Core JavaScript -->
 <script src="/static/js/bootstrap.min.js"></script>
 <!-- Vue  -->
@@ -294,7 +296,7 @@
                             if (this.formdata.type==="自行上传"){
                                 continue
                             }
-                        }else if(x ==="music"){
+                        }else if(x ==="music" ||x === "Song"){
                             if (this.formdata.type !=="自行上传"){
                                 continue
                             }
@@ -316,6 +318,32 @@
             }
         }
     })
+    let data = [];
+    data.push({
+            title:<<<.music.Name>>>,
+        author:<<<.music.Author>>>,
+        url:<<<.music.Url>>>,
+        pic:<<<.music.PicUrl>>>
+    })
+    <<<range $el := .d.S>>>
+        data.push({
+        title:<<<$el.Song.Name>>>,
+            author:<<<$el.Song.Author>>>,
+        url:<<<$el.Song.Url>>>,
+        pic:<<<$el.Song.PicUrl>>>
+    })
+                <<<end>>>
+
+    var ap1 = new APlayer({
+        element: document.getElementById('player1'),
+        narrow: false,
+        autoplay: true,
+        showlrc: false,
+        mutex: true,
+        theme: '#ad7a86',
+        listmaxheight: '200px',
+        music: data
+    });
 </script>
 </body>
 
