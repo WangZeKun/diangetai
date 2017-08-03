@@ -10,4 +10,5 @@ func init() {
 	beego.Router("/add",&controllers.MainController{},"post:Post")
 	beego.Router("/after",&controllers.AfterController{})
 	beego.Router("/end",&controllers.AfterController{},"post:End")
+	beego.Router("/plain",&controllers.PlainController{})
 }

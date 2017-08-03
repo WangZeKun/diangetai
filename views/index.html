@@ -41,17 +41,11 @@
     <div class="container topnav">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+            <img src="/static/img/gqmms.jpg" class="navbar-left topnav" height="50px" width="50px">
             <a class="navbar-brand topnav" href="#">广中点歌台</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <a href="#home">点歌</a>
@@ -62,6 +56,9 @@
                 <li>
                     <a href="#contact">联系我们</a>
                 </li>
+                <li>
+                    <a href="/plain">说明文档</a>
+               </li>
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -86,7 +83,7 @@
                             <div v-if="error" class="alert alert-warning alert-dismissible" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                                         aria-hidden="true">&times;</span></button>
-                                <strong>Warning!</strong> 请确认填写完表格
+                                <strong>Warning!</strong> 请确认填写完表格*
                             </div>
                             <h3>开始点歌吧</h3>
                             <hr class="intro-divider">
@@ -118,6 +115,7 @@
                                         <div class="col-sm-10">
                                             <select class="form-control" v-model="formdata.type">
                                                 <option>网易云音乐</option>
+                                                <option>QQ音乐</option>
                                                 <option>百度音乐</option>
                                                 <option>酷狗音乐</option>
                                                 <option>酷我音乐</option>
@@ -217,8 +215,8 @@
     <div class="container">
 
         <div class="row">
-            <div >
-                <h2>如有意见或建议，请发送邮件至1015190212@qq.com</h2>
+            <div>
+                <h3>如有意见或建议，请发送邮件至1015190212@qq.com</h3>
             </div>
         </div>
 
@@ -255,11 +253,10 @@
         </div>
     </div>
 </footer>
-                <br>
-                <br>
-                <div id="player1" style="background-color:white;position: fixed;bottom:0;width: 100%" class="aplayer"></div>
+                <div id="player1" style="background-color:white;position: fixed;top:50px;" class="aplayer"></div>
 
-<!-- jQuery -->
+
+                <!-- jQuery -->
 <script src="/static/js/jquery.js"></script><script src="/static/js/APlayer.min.js"></script>
 <!-- Bootstrap Core JavaScript -->
 <script src="/static/js/bootstrap.min.js"></script>
@@ -314,36 +311,25 @@
                 console.log(res)
             }).catch (res =>{
                     console.log(res)
+                alert("出现问题，请与管理员联系")
                 })
             }
         }
     })
-    let data = [];
-    data.push({
+    var ap1 = new APlayer({
+        element: document.getElementById('player1'),
+        narrow: true,
+        showlrc: false,
+        mutex: true,
+        theme: '#ad7a86',
+        music: {
             title:<<<.music.Name>>>,
         author:<<<.music.Author>>>,
         url:<<<.music.Url>>>,
         pic:<<<.music.PicUrl>>>
-    })
-    <<<range $el := .d.S>>>
-        data.push({
-        title:<<<$el.Song.Name>>>,
-            author:<<<$el.Song.Author>>>,
-        url:<<<$el.Song.Url>>>,
-        pic:<<<$el.Song.PicUrl>>>
-    })
-                <<<end>>>
-
-    var ap1 = new APlayer({
-        element: document.getElementById('player1'),
-        narrow: false,
-        autoplay: true,
-        showlrc: false,
-        mutex: true,
-        theme: '#ad7a86',
-        listmaxheight: '200px',
-        music: data
+    }
     });
+    ap1.play()
 </script>
 </body>
 

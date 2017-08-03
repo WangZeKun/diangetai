@@ -41,13 +41,7 @@
     <div class="container topnav">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+            <img src="/static/img/gqmms.jpg" class="navbar-left topnav" height="50px" width="50px">
             <a class="navbar-brand topnav" href="#">点歌台后端</a>
         </div>
     </div>
@@ -96,8 +90,9 @@
             <input type="file" id="PictureFile" @change="selectPicture" accept="image/*">
             <p class="help-block">在主页上展示的图片</p>
         </div>
-        <button class="button button-glow button-rounded button-royal" :disable="loading" @click="send">决定播放</button>
     </form>
+        <button class="button button-glow button-rounded button-royal" :disable="loading" @click="send">决定播放</button>
+
     </center>
 </div>
 <!-- Table -->
@@ -108,7 +103,7 @@
 
         <div class="row">
             <div>
-                <h2>如有意见或建议，请发送邮件至1015190212@qq.com</h2>
+                <h3>如有意见或建议，请发送邮件至1015190212@qq.com</h3>
             </div>
         </div>
 
@@ -169,19 +164,29 @@
                 this.form.picture = event.target.files[0];
             },
             send:function () {
-                if(this.form.select.length <2){
+                if (this.loading){
+                    return
+                }
+
+                if (this.form.select.length < 2) {
                     alert("请选择要播放的歌曲（大于等于2个）")
                 }
-                this.loading=true
+                this.loading = true
                 let formdata = new FormData()
                 let select = []
-                for (let x of this.form.select){
+                for (let x of this.form.select) {
                     select.push(this.data[x])
                 }
-                formdata.append('select',JSON.stringify(select))
-                formdata.append('file',this.form.file)
-                formdata.append('picture',this.form.picture)
-                axios.post('/end',formdata)
+                formdata.append('select', JSON.stringify(select))
+                formdata.append('file', this.form.file)
+                formdata.append('picture', this.form.picture)
+                axios.post('/end', formdata).then(res => {
+                    console.log(res)
+                    alert("上传成功 ！")
+            }).
+                catch(res => {
+                    console.log(res)
+            })
             }
 
         },

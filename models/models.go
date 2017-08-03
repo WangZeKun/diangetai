@@ -39,6 +39,7 @@ func init() {
 	bool2, _ := engine.Where("is_end=false").Get(&p)
 	if !bool2 {
 		Periods{
+			Num:1,
 			IsEnd: false,
 		}.Insert()
 		beego.AppConfig.Set("num", "1")
@@ -77,7 +78,7 @@ func NowRead(num int) (s []Schedule, err error) {
 func Delete(num int, s []Schedule) (err error) {
 	for _, i := range s {
 		i.Asc = true
-		engine.Where("arrive_song=? and send_song=? and song=? and num=?", i.ArriveSong, i.SendSong, i.Song, num).Cols("asc").Update(i)
+		_,err = engine.Where("arrive_song=? and send_song=? and num=?", i.ArriveSong, i.SendSong, num).Cols("asc").Update(i)
 	}
 	return
 }

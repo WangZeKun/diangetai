@@ -15,6 +15,14 @@ import (
 	"github.com/astaxie/beego"
 )
 
+type PlainController struct {
+	beego.Controller
+}
+
+func (c *PlainController) Get()  {
+	c.TplName="plain.html"
+}
+
 //MainController  点歌台主页
 type MainController struct {
 	beego.Controller
@@ -65,6 +73,7 @@ func (c *MainController) Post() {
 	} else {
 		s.Song, err = chain.GetURL(c.GetString("url"))
 		if err != nil {
+			beego.Error(c.GetString("url"))
 			beego.Error(err)
 			c.Abort("401")
 		}
@@ -107,19 +116,20 @@ func (c *AfterController) End() {
 		beego.Error(err)
 		c.Abort("500")
 	}
-	beego.Informational(c.GetString("select"))
 	var s []models.Schedule
 	err = json.Unmarshal([]byte(c.GetString("select")), &s)
 	if err != nil {
 		beego.Error(err)
 		c.Abort("500")
 	}
+	beego.Informational(1)
 	err = compress(s, "static/music/"+strconv.Itoa(num)+".zip") //存文件
 	if err != nil {
 		beego.Error(err)
 		c.Abort("500")
 	}
 	_, h, err := c.GetFile("picture") //获取上传的文件
+	beego.Informational(123)
 	var path string
 	if err != nil {
 		path = "static/img/" + strconv.Itoa(num) + ".jpg"
@@ -151,7 +161,16 @@ func (c *AfterController) End() {
 		c.Abort("500")
 	}
 	err = models.Delete(num, s)
-	beego.AppConfig.Set("num", strconv.Itoa(num+1))
+	if err != nil {
+		beego.Error(err)
+		c.Abort("500")
+	}
+	err = beego.AppConfig.Set("num", strconv.Itoa(num+1))
+	beego.Informational(beego.AppConfig.String("num"))
+	if err != nil {
+		beego.Error(err)
+		c.Abort("500")
+	}
 	c.ServeJSON()
 }
 
@@ -201,8 +220,7 @@ func compress(in []models.Schedule, dest string) (err error) {
 	if err != nil {
 		return err
 	}
-	os.Create(dest)
-	f, err := os.OpenFile(dest, os.O_CREATE|os.O_WRONLY, 0666)
+	f,err :=os.Create(dest)
 	if err != nil {
 		return
 	}

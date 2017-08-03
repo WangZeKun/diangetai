@@ -12,6 +12,7 @@ func init() {
 
 func main() {
 	beego.AddFuncMap("index", index)
+	beego.SetLevel(beego.LevelError)
 	beego.Run()
 }
 
